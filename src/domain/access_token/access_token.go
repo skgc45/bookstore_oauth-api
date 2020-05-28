@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/skgc45/bookstore_oauth-api/src/utils/crypto_utils"
-	"github.com/skgc45/bookstore_oauth-api/src/utils/errors"
+	"github.com/skgc45/bookstore_utils-go/rest_errors"
 )
 
 const (
@@ -28,14 +28,14 @@ type AccessTokenRequest struct {
 	ClientSecret string `json:"client_secret"`
 }
 
-func (atr *AccessTokenRequest) Validate() *errors.RestErr {
+func (atr *AccessTokenRequest) Validate() *rest_errors.RestErr {
 	switch atr.GrantType {
 	case grantTypePassword:
 		break
 	case grantTypeCredentials:
 		break
 	default:
-		return errors.NewBadRequestError("invalid grant_type parameter")
+		return rest_errors.NewBadRequestError("invalid grant_type parameter")
 	}
 	// TODO:// Validate parameters for each grant_tyep
 	return nil
@@ -48,19 +48,19 @@ type AccessToken struct {
 	Expires     int64  `json:"expires"`
 }
 
-func (at *AccessToken) Validate() *errors.RestErr {
+func (at *AccessToken) Validate() *rest_errors.RestErr {
 	at.AccessToken = strings.TrimSpace(at.AccessToken)
 	if at.AccessToken == "" {
-		return errors.NewBadRequestError("invalid access token id")
+		return rest_errors.NewBadRequestError("invalid access token id")
 	}
 	if at.UserId <= 0 {
-		return errors.NewBadRequestError("invalid user id")
+		return rest_errors.NewBadRequestError("invalid user id")
 	}
 	if at.ClientId <= 0 {
-		return errors.NewBadRequestError("invalid client id")
+		return rest_errors.NewBadRequestError("invalid client id")
 	}
 	if at.Expires <= 0 {
-		return errors.NewBadRequestError("invalid expiration time")
+		return rest_errors.NewBadRequestError("invalid expiration time")
 	}
 	return nil
 }
